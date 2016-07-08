@@ -52,8 +52,7 @@ class Forecastio {
         if (callback) {
         	req.sendasync(callback.bindenv(this));
         } else {
-        	local res = req.sendsync();
-        	return {"response": res};
+        	return req.sendsync();
 		}
     }
 
@@ -91,8 +90,7 @@ class Forecastio {
         if (callback) {
         	req.sendasync(callback.bindenv(this));
         } else {
-        	local res = req.sendsync();
-        	return {"response": res};
+        	return req.sendsync();
 		}
     }
 
