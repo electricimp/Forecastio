@@ -103,6 +103,35 @@ Should an error occur during the assembly and sending of the request, the functi
 
 The data returned by the Forecast API is complex and is not parsed in any way by the library. To convert the returned JSON data into a Squirrel-accessible table, used `http.jsondecode(response.body);`. This is typically wrapped in a `try... catch` structure in order to trap decode errors.
 
+#### Example
+
+```squirrel
+local monthAgo = time() - 2592000;
+fc.timeMachineRequest(myLongitude, myLatitude, monthAgo, function(response) {
+	local forecast = null;
+	if (debug) server.log("Historical weather data received from forecast.io");
+
+    // Decode the JSON-format data from forecast.io (error thrown if invalid)
+    try {
+        forecast = http.jsondecode(response.body);
+
+        if ("hourly" in forecast) {
+            if ("data" in forecast.hourly) {
+                local item = forecast.hourly.data[1];
+                local celsius = ((item.apparentTemperature.tofloat() - 32.0) * 5.0) / 9.0;
+                local message = "A month ago, the temperature was: " + format("%.1f", celsius) + "ºC";
+                server.log(message);
+            }
+        }
+    } catch(error) {
+        if (debug) {
+            server.error("Could not decode JSON returned by Forecast.io");
+            server.error(error);
+        }
+    }
+});
+```
+
 ## License
 
 This class is licensed under the [MIT License](https://github.com/electricimp/Forecastio/blob/master/LICENSE)
