@@ -4,6 +4,8 @@ This class provides access to the Forecast API (v2) provided by [Forecast.io](ht
 
 Access to the API is controlled by key. To obtain a key, please register for developer access [here](https://developer.forecast.io/register).
 
+The Forecast API returns a wealth of data (in JSON format). As such, it is left to your application to decode the returned data as only you know which data your application requires. You can view the many fields the returned data may contain [here](https://developer.forecast.io/docs/v2).
+
 Please note that the Forecast API is a commercial service. Though the first 1000 API calls made under your API key are free of charge, subsequent calls are billed at a rate of $0.0001 per call. The usage terms also require the addition of a “Powered by Forecast” badge that links to `http://forecast.io/` wherever data from the API is displayed.
 
 **To add this library to your project, add** `#require "Forecastio.class.nut:1.0.0"` **to the top of your agent code**
