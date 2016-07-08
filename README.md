@@ -1,4 +1,4 @@
-# Forecastio
+# Forecastio 1.0.0
 
 This class provides access to the Forecast API (v2) provided by [Forecast.io](http://forecast.io/).
 
