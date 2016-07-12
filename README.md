@@ -32,7 +32,7 @@ fc <- Forecastio(YOUR_FORECAST_API_KEY);
 
 This method sends a [forecast request](https://developer.forecast.io/docs/v2#forecast_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude*.
 
-You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function requires a single parameter into which a the response will be passed as a table, *response*, containing the following keys:
+You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function requires a single parameter into which the response will be passed as a table containing the following keys:
 
 | Key | Type | Description |
 | --- | --- | --- |
@@ -87,7 +87,7 @@ fc.forecastRequest(myLongitude, myLatitude, function(response) {
 
 This method sends a [time machine request](https://developer.forecast.io/docs/v2#time_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude*, and a timestamp. The value passed into the parameter *time* should be either a Unix timestamp (an Integer) or a string formatted according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
 
-You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function requires a single parameter into which a the response will be passed as a table, *response*, containing the following keys:
+You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function requires a single parameter into which the response will be passed as a table containing the following keys:
 
 | Key | Type | Description |
 | --- | --- | --- |
