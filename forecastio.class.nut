@@ -47,8 +47,9 @@ class Forecastio {
         if (!_checkCoords(longitude, latitude, "forecastRequest")) {
             if (callback) {
                 callback({"err": "Co-ordinate error"});
+                return;
             } else {
-                return req.sendsync();
+                return {"err": "Co-ordinate error"};
             }
         }
 
@@ -76,8 +77,9 @@ class Forecastio {
         if (!_checkCoords(longitude, latitude, "timeMachineRequest")) {
             if (callback) {
                 callback({"err": "Co-ordinate error"});
+                return;
             } else {
-                return req.sendsync();
+                return {"err": "Co-ordinate error"};
             }
         }
 
