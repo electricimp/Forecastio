@@ -44,7 +44,7 @@ class Forecastio {
         //  If callback is not null, the function returns nothing
         //  If there is an error, the function returns a table with key 'err'
 
-		if (!checkCoords(longitude, latitude, "forecastRequest")) return {"err": "Co-ordinate error"};
+		if (!_checkCoords(longitude, latitude, "forecastRequest")) return {"err": "Co-ordinate error"};
 
         local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude);
         local req = http.get(url);
@@ -67,7 +67,7 @@ class Forecastio {
         //  If callback is not null, the function returns nothing
         //  If there is an error, the function returns a table with key 'err'
 
-		if (!checkCoords(longitude, latitude, "timeMachineRequest")) return {"err": "Co-ordinate error"};
+		if (!_checkCoords(longitude, latitude, "timeMachineRequest")) return {"err": "Co-ordinate error"};
 
 		if (time == null || time.len() == 0) {
 			if (_debug) server.error("Forecastio.timeRequest() requires a valid time parameter");
@@ -96,7 +96,7 @@ class Forecastio {
 
     // ********** PRIVATE FUNCTIONS - DO NOT CALL **********
 
-    function checkCoords(longitude, latitude, caller) {
+    function _checkCoords(longitude, latitude, caller) {
 
     	if (longitude == 999 || latitude == 999) {
 			if (_debug) server.error("Forecastio." + caller + "() requires valid latitude/longitude co-ordinates");
