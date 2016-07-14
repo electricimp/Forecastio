@@ -46,21 +46,15 @@ class Forecastio {
 
         if (!_checkCoords(longitude, latitude, "forecastRequest")) {
             if (callback) {
-                callback({"err": "Co-ordinate error"});
-                return;
+                callback("Co-ordinate error", null);
+                return null;
             } else {
                 return {"err": "Co-ordinate error"};
             }
         }
 
         local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude);
-        local req = http.get(url);
-
-        if (callback) {
-            req.sendasync(callback.bindenv(this));
-        } else {
-            return req.sendsync();
-        }
+        return _sendRequest(http.get(url), callback);
     }
 
     function timeMachineRequest(longitude = 999, latitude = 999, time = null, callback = null) {
@@ -76,8 +70,8 @@ class Forecastio {
 
         if (!_checkCoords(longitude, latitude, "timeMachineRequest")) {
             if (callback) {
-                callback({"err": "Co-ordinate error"});
-                return;
+                callback("Co-ordinate error", null);
+                return null;
             } else {
                 return {"err": "Co-ordinate error"};
             }
@@ -99,19 +93,71 @@ class Forecastio {
         }
 
         local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude) + "," + timeString;
-        local req = http.get(url);
-
-        if (callback) {
-            req.sendasync(callback.bindenv(this));
-        } else {
-            return req.sendsync();
-        }
+        return _sendRequest(http.get(url), callback);
     }
 
     // ********** PRIVATE FUNCTIONS - DO NOT CALL **********
 
-    function _checkCoords(longitude, latitude, caller) {
+    function _sendRequest(req, cb) {
+        if (cb) {
+            req.sendasync(function(resp) {
+                local err, data, count;
+                if (resp.statuscode != 200) {
+                    err = format("Unable to retrieve forecast data (code: %i)", resp.statuscode);
+                } else {
+                    try {
+                        data = http.jsondecode(resp.body);
+                    } catch(exp) {
+                        err = "Unable to decode data received from Forecast.io: " + exp;
+                    }
+                }
 
+                // Add daily API request count to 'data'
+                count = _getCallCount(resp);
+                if (count != -1) data.callCount <- count;
+
+                cb(err, data);
+            }.bindenv(this));
+            return null;
+        } else {
+            local resp = req.sendsync();
+            local err, data, count, returnTable;
+            if (resp.statuscode != 200) {
+                err = format("Unable to retrieve forecast data (code: %i)", response.statuscode);
+            } else {
+                try {
+                    data = http.jsondecode(response.body);
+                } catch(exp) {
+                    err = "Unable to decode data received from Forecast.io: " + exp;
+                }
+            }
+
+            // Add daily API request count to 'data'
+            count = _getCallCount(resp);
+            if (count != -1) data.callCount <- count;
+
+            // Create table of returned data
+            returnTable.err <- err;
+            returnTable.data <- data;
+
+            return returnTable;
+        }
+    }
+
+    function _getCallCount(resp) {
+        // Extract daily API request count from Forecast.io response header
+        if ("headers" in resp) {
+            if ("x-forecast-api-calls" in resp.headers) {
+                local a = resp.headers["x-forecast-api-calls"];
+                return a.tointeger();
+            }
+        }
+
+        return -1;
+    }
+
+    function _checkCoords(longitude, latitude, caller) {
+        // Check that valid co-ords have been supplied
         if (longitude == 999 || latitude == 999) {
             if (_debug) server.error("Forecastio." + caller + "() requires valid latitude/longitude co-ordinates");
             return false;

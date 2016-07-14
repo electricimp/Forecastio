@@ -32,53 +32,37 @@ fc <- Forecastio(YOUR_FORECAST_API_KEY);
 
 This method sends a [forecast request](https://developer.forecast.io/docs/v2#forecast_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude*.
 
-You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function requires a single parameter into which the response will be passed as a table containing the following keys:
+You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function must include two parameters: *err*, into which a human-readable error message error message will passed if an error was encountered during the assembly or sending of the request; and *data*, a table containing the decoded response from Forecast.io.
 
-| Key | Type | Description |
-| --- | --- | --- |
-| *statuscode*   | Integer | HTTP status code (or libcurl error code) |
-| *headers*      | Table   | Squirrel table of returned HTTP headers |
-| *body*         | String  | Returned HTTP body (if any) |
+If you choose not to provide a callback, the forecast will be made synchronously (blocking) and a table containing *err* and *data*, as above, will be returned by *forecastRequest()*. If the request is made asynchronously, *forecastRequest()* does not return anything.
 
-&nbsp;<br>If the request is made asynchronously, *forecastRequest()* does not return anything.
-
-If you choose not to provide a callback, the forecast will be made synchronously (blocking) and the *response* table will be returned by *forecastRequest()*.
-
-Should an error occur during the assembly and sending of the request, the function will return a table with the key *err* whose value is a human-readable error message. The key *err* is not present if no error has been encountered.
-
-The data returned by the Forecast API is complex and is not parsed in any way by the library. To convert the returned JSON data into a Squirrel-accessible table, used `http.jsondecode(response.body);`. This is typically wrapped in a `try... catch` structure in order to trap decode errors.
+The data returned by the Forecast API is complex and is not parsed in any way by the library. However, *data* contains an additional key, *callCount*, which is the number of calls you have made to the Forecast API. This is decoded by the library and added to the returned data table.
 
 #### Example
 
 ```squirrel
-fc.forecastRequest(myLongitude, myLatitude, function(response) {
-	local forecast = null;
-	if (debug) server.log("Weather forecast data received from forecast.io");
+fc.forecastRequest(myLongitude, myLatitude, function(err, data) {
+    if (err) server.error(err);
 
-    // Decode the JSON-format data from forecast.io (error thrown if invalid)
-    try {
-        forecast = http.jsondecode(response.body);
-
-        if ("hourly" in forecast) {
-            if ("data" in forecast.hourly) {
+    if (data) {
+        server.log("Weather forecast data received from forecast.io");
+        if ("hourly" in data) {
+            if ("data" in data.hourly) {
                 // Get second item in array: this is the weather one hour from now
-                local item = forecast.hourly.data[1];
-                local data = {};
-                data.icon <- item.icon;
-                data.temp <- item.apparentTemperature;
-                device.send("show.weather.forecast", data);
+                local item = data.hourly.data[1];
+                local sendData = {};
+                sendData.cast <- item.icon;
+                sendData.temp <- item.apparentTemperature;
+                device.send("weather.show.forecast", sendData);
 
-                // Log the outlook
-                local celsius = ((data.temp.tofloat() - 32.0) * 5.0) / 9.0;
-                local message = "Outlook: " + data.cast + ". Temperature: " + format("%.1f", celsius) + "ºC";
+                // Log the output
+                local celsius = ((sendData.temp.tofloat() - 32.0) * 5.0) / 9.0;
+                local message = "Outlook: " + sendData.cast + ". Temperature: " + format("%.1f", celsius) + "ºC";
                 server.log(message);
             }
         }
-    } catch(error) {
-        if (debug) {
-            server.error("Could not decode JSON returned by Forecast.io");
-            server.error(error);
-        }
+
+        if ("callCount" in data) server.log("Current Forecast API call tally: " + data.callCount + "/1000");
     }
 });
 ```
@@ -87,47 +71,37 @@ fc.forecastRequest(myLongitude, myLatitude, function(response) {
 
 This method sends a [time machine request](https://developer.forecast.io/docs/v2#time_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude*, and a timestamp. The value passed into the parameter *time* should be either a Unix timestamp (an Integer) or a string formatted according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
 
-You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function requires a single parameter into which the response will be passed as a table containing the following keys:
+You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function must include two parameters: *err*, into which a human-readable error message error message will passed if an error was encountered during the assembly or sending of the request; and *data*, a table containing the decoded response from Forecast.io.
 
-| Key | Type | Description |
-| --- | --- | --- |
-| *statuscode*   | Integer | HTTP status code (or libcurl error code) |
-| *headers*      | Table   | Squirrel table of returned HTTP headers |
-| *body*         | String  | Returned HTTP body (if any) |
+If you choose not to provide a callback, the forecast will be made synchronously (blocking) and a table containing *err* and *data*, as above, will be returned by *timeMachineRequest()*. If the request is made asynchronously, *timeMachineRequest()* does not return anything.
 
-&nbsp;<br>If the request is made asynchronously, *timeMachineRequest()* does not return anything.
-
-If you choose not to provide a callback, the forecast will be made synchronously (blocking) and the *response* table will be returned by *timeMachineRequest()*.
-
-Should an error occur during the assembly and sending of the request, the function will return a table with the key *err* whose value is a human-readable error message. The key *err* is not present if no error has been encountered.
-
-The data returned by the Forecast API is complex and is not parsed in any way by the library. To convert the returned JSON data into a Squirrel-accessible table, used `http.jsondecode(response.body);`. This is typically wrapped in a `try... catch` structure in order to trap decode errors.
+The data returned by the Forecast API is complex and is not parsed in any way by the library. However, *data* contains an additional key, *callCount*, which is the number of calls you have made to the Forecast API. This is decoded by the library and added to the returned data table.
 
 #### Example
 
 ```squirrel
 local monthAgo = time() - 2592000;
-fc.timeMachineRequest(myLongitude, myLatitude, monthAgo, function(response) {
-	local forecast = null;
-	if (debug) server.log("Historical weather data received from forecast.io");
+fc.timeMachineRequest(myLongitude, myLatitude, monthAgo, function(err, data) {
+    if (err) server.error(err);
 
-    // Decode the JSON-format data from forecast.io (error thrown if invalid)
-    try {
-        forecast = http.jsondecode(response.body);
+    if (data) {
+        server.log("Weather forecast data received from forecast.io");
+        if ("hourly" in data) {
+            if ("data" in data.hourly) {
+                local item = data.hourly.data[0];
+                local sendData = {};
+                sendData.cast <- item.icon;
+                sendData.temp <- item.apparentTemperature;
+                device.send("weather.show.forecast", sendData);
 
-        if ("hourly" in forecast) {
-            if ("data" in forecast.hourly) {
-                local item = forecast.hourly.data[1];
-                local celsius = ((item.apparentTemperature.tofloat() - 32.0) * 5.0) / 9.0;
-                local message = "A month ago, the temperature was: " + format("%.1f", celsius) + "ºC";
+                // Log the output
+                local celsius = ((sendData.temp.tofloat() - 32.0) * 5.0) / 9.0;
+                local message = "Outlook: " + sendData.cast + ". Temperature: " + format("%.1f", celsius) + "ºC";
                 server.log(message);
             }
         }
-    } catch(error) {
-        if (debug) {
-            server.error("Could not decode JSON returned by Forecast.io");
-            server.error(error);
-        }
+
+        if ("callCount" in data) server.log("Current Forecast API call tally: " + data.callCount + "/1000");
     }
 });
 ```
