@@ -23,7 +23,7 @@ You may also pass a boolean value into the *debug* parameter: if you pass `true`
 
 const API_KEY = "<YOUR_FORECAST_API_KEY>";
 
-fc <- Forecastio(YOUR_FORECAST_API_KEY);
+fc <- Forecastio(API_KEY);
 ```
 
 ## Class Methods
