@@ -77,7 +77,7 @@ class Forecastio {
             }
         }
 
-        if (time == null || time.len() == 0) {
+        if (time == null || time.tostring().len() == 0) {
             if (_debug) server.error("Forecastio.timeRequest() requires a valid time parameter");
             return {"err": "Timestamp error"};
         }
