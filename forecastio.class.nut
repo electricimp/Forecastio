@@ -34,11 +34,12 @@ class Forecastio {
         _apikey = key;
     }
 
-    function forecastRequest(longitude = 999, latitude = 999, callback = null) {
+    function forecastRequest(longitude = 999, latitude = 999, units = us, callback = null) {
         // Parameters:
         //  1. Longitude of location for which a forecast is required
         //  2. Latitude of location for which a forecast is required
-        //  3. Optional synchronous operation callback
+        //  3. Optional units parameter which defaults to us is not specified
+        //  4. Optional synchronous operation callback
         // Returns:
         //  If callback is null, the function returns a table with key 'response'
         //  If callback is not null, the function returns nothing
@@ -53,16 +54,17 @@ class Forecastio {
             }
         }
 
-        local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude);
+        local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude) + "?units=" + units;
         return _sendRequest(http.get(url), callback);
     }
 
-    function timeMachineRequest(longitude = 999, latitude = 999, time = null, callback = null) {
+    function timeMachineRequest(longitude = 999, latitude = 999, time = null, units = us, callback = null) {
         // Parameters:
         //  1. Longitude of location for which a forecast is required
         //  2. Latitude of location for which a forecast is required
         //  3. A Unix time or ISO 1601-formatted string
-        //  4. Optional synchronous operation callback
+        //  4. Optional units parameter which defaults to us is not specified
+        //  5. Optional synchronous operation callback
         // Returns:
         //  If callback is null, the function returns a table with key 'response'
         //  If callback is not null, the function returns nothing
@@ -92,7 +94,7 @@ class Forecastio {
             return {"err": "Timestamp error"};
         }
 
-        local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude) + "," + timeString;
+        local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude) + "," + timeString + "?units=" + units;
         return _sendRequest(http.get(url), callback);
     }
 
