@@ -15,6 +15,7 @@ class Forecastio {
 
     static FORECAST_URL = "https://api.forecast.io/forecast/";
     static VERSION = [1,0,0];
+    static VALID_UNITS = [us,si,ca,uk2,auto];
 
     _apikey = null;
     _debug = false;
@@ -38,7 +39,7 @@ class Forecastio {
         // Parameters:
         //  1. Longitude of location for which a forecast is required
         //  2. Latitude of location for which a forecast is required
-        //  3. Optional units parameter which defaults to us is not specified
+        //  3. Units parameter which defaults to us if improperly specified
         //  4. Optional synchronous operation callback
         // Returns:
         //  If callback is null, the function returns a table with key 'response'
@@ -53,7 +54,11 @@ class Forecastio {
                 return {"err": "Co-ordinate error"};
             }
         }
-
+        
+        if (!(units in VALID_UNITS)) {
+            units = us;
+        }
+        
         local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude) + "?units=" + units;
         return _sendRequest(http.get(url), callback);
     }
@@ -63,7 +68,7 @@ class Forecastio {
         //  1. Longitude of location for which a forecast is required
         //  2. Latitude of location for which a forecast is required
         //  3. A Unix time or ISO 1601-formatted string
-        //  4. Optional units parameter which defaults to us is not specified
+        //  4. Units parameter which defaults to us if improperly specified
         //  5. Optional synchronous operation callback
         // Returns:
         //  If callback is null, the function returns a table with key 'response'
@@ -84,6 +89,10 @@ class Forecastio {
             return {"err": "Timestamp error"};
         }
 
+        if (!(units in VALID_UNITS)) {
+            units = us;
+        }
+        
         local timeString;
         if (typeof time == "integer") {
             timeString = time.tostring();
