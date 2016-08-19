@@ -14,7 +14,7 @@ class Forecastio {
     // License: MIT
 
     static FORECAST_URL = "https://api.forecast.io/forecast/";
-    static VERSION = [1,1,0];
+    static version = [1,1,0];
 
     _apikey = null;
     _units = null;
