@@ -1,4 +1,4 @@
-# Forecastio 1.0.0
+# Forecastio 1.1.0
 
 This class provides access to the Forecast API (v2) provided by [Forecast.io](http://forecast.io/).
 
@@ -8,7 +8,7 @@ The Forecast API returns a wealth of data (in JSON format). As such, it is left 
 
 Please note that the Forecast API is a commercial service. Though the first 1000 API calls made under your API key are free of charge, subsequent calls are billed at a rate of $0.0001 per call. You and your application will not be notified by the library if this occurs, so you may wish to add suitable call-counting code to your application. The usage terms also require the addition of a “Powered by Forecast” badge that links to `http://forecast.io/` wherever data from the API is displayed.
 
-**To add this library to your project, add** `#require "Forecastio.class.nut:1.0.0"` **to the top of your agent code**
+**To add this library to your project, add** `#require "Forecastio.class.nut:1.1.0"` **to the top of your agent code**
 
 ## Class Usage
 
@@ -19,7 +19,7 @@ The constructor requires your Forecast API key as a string.
 You may also pass a boolean value into the *debug* parameter: if you pass `true`, extra debugging information will be posted to the device log. This is disabled by default.
 
 ```squirrel
-#require "Forecastio.class.nut:1.0.0"
+#require "Forecastio.class.nut:1.1.0"
 
 const API_KEY = "<YOUR_FORECAST_API_KEY>";
 
@@ -105,6 +105,27 @@ fc.timeMachineRequest(myLongitude, myLatitude, monthAgo, function(err, data) {
     }
 });
 ```
+
+### setUnits(*units*)
+
+This methods allows you to specify the category of units in which the Forecast API will return data to your code. Pass into *units* one of the following strings: `"us"`, `"si"`, `"ca"`, `"uk"` or `"uk2"`. The default is `"us"`. Please see the Forecast API documentation for the [meaning of each setting](https://developer.forecast.io/docs/v2#options).
+
+**Note** `"uk"` and `"uk2"` are identical; Forecast.io only supports the latter, but the former is included for convenience.
+
+This method returns the *Forecastio* instance, allowing you to chain *setUnits()* with *setLanguage()*, below:
+
+#### Example
+
+```squirrel
+// Select data in SI units, and weather summaries in German
+fc.setUnits("si").setLanguage("de");
+```
+
+### setLanguage(*language*)
+
+This methods allows you to specify the language in which summaries of weather conditions are returned by the Forecast API. Pass into *language* a string indicating which language you require. The default is English, `"en"`. Please see the Forecast API documentation for the [full list of supported languages](https://developer.forecast.io/docs/v2#options).
+
+See *setUnits()*, above, for an example of *setLanguage()*’s use.
 
 ## License
 

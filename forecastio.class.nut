@@ -14,9 +14,11 @@ class Forecastio {
     // License: MIT
 
     static FORECAST_URL = "https://api.forecast.io/forecast/";
-    static VERSION = [1,0,0];
+    static VERSION = [1,1,0];
 
     _apikey = null;
+    _units = null;
+    _lang = null;
     _debug = false;
 
     constructor (key = null, debug = false) {
@@ -30,6 +32,7 @@ class Forecastio {
             return null;
         }
 
+        _units = "us";
         _debug = debug;
         _apikey = key;
     }
@@ -54,6 +57,7 @@ class Forecastio {
         }
 
         local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude);
+        url = _addOptions(url);
         return _sendRequest(http.get(url), callback);
     }
 
@@ -93,7 +97,51 @@ class Forecastio {
         }
 
         local url = FORECAST_URL + _apikey + "/" + format("%.6f", latitude) + "," + format("%.6f", longitude) + "," + timeString;
+        url = _addOptions(url);
         return _sendRequest(http.get(url), callback);
+    }
+
+    function setUnits(units = "us") {
+        local types = ["us", "si", "ca", "uk", "uk2"];
+        local match = false;
+        units = units.tolower();
+        foreach (type in types) {
+            if (units == type) {
+                match = true;
+                break;
+            }
+        }
+
+        if (!match) {
+            if (_debug) server.error("Incorrect units option selected; using default value");
+            units = "us";
+        }
+
+        if (units == "uk") units = "uk2";
+        _units = units;
+        return this;
+    }
+
+    function setLanguage(language = "en") {
+        local types = ["ar", "az", "be", "bs", "cs", "de", "el", "en", "es", "fr", "hr",
+                       "hu", "id", "it", "is", "kw", "nb", "nl", "pl", "pt", "ru", "sk",
+                       "sr", "sv", "tet", "tr", "uk", "x-pig-latin", "zh", "zh-tw"];
+        local match = false;
+        language = language.tolower();
+        foreach (type in types) {
+            if (language == type) {
+                match = true;
+                break;
+            }
+        }
+
+        if (!match) {
+            if (_debug) server.error("Incorrect language option selected; using default value");
+            language = "en";
+        }
+
+        _lang = language;
+        return this;
     }
 
     // ********** PRIVATE FUNCTIONS - DO NOT CALL **********
@@ -174,5 +222,11 @@ class Forecastio {
         }
 
         return true;
+    }
+
+    function _addOptions(baseurl) {
+        local opts = "?units=" + _units;
+        if (_lang) opts = opts + "&lang=" + _lang;
+        return (baseurl + opts);
     }
 }
