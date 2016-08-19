@@ -125,6 +125,8 @@ fc.setUnits("si").setLanguage("de");
 
 This methods allows you to specify the language in which summaries of weather conditions are returned by the Forecast API. Pass into *language* a string indicating which language you require. The default is English, `"en"`. Please see the Forecast API documentation for the [full list of supported languages](https://developer.forecast.io/docs/v2#options).
 
+This method returns the *Forecastio* instance.
+
 See *setUnits()*, above, for an example of *setLanguage()*’s use.
 
 ## License
