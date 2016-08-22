@@ -14,7 +14,7 @@ class Forecastio {
     // License: MIT
 
     static FORECAST_URL = "https://api.forecast.io/forecast/";
-    static version = [1,1,0];
+    static version = [1,1,1];
 
     _apikey = null;
     _units = null;
@@ -32,7 +32,7 @@ class Forecastio {
             return null;
         }
 
-        _units = "us";
+        _units = "auto";
         _debug = debug;
         _apikey = key;
     }
@@ -102,7 +102,7 @@ class Forecastio {
     }
 
     function setUnits(units = "us") {
-        local types = ["us", "si", "ca", "uk", "uk2"];
+        local types = ["us", "si", "ca", "uk", "uk2", "auto"];
         local match = false;
         units = units.tolower();
         foreach (type in types) {
