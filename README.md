@@ -131,9 +131,9 @@ See *setUnits()*, above, for an example of *setLanguage()*’s use.
 
 ## Release Notes
 
-1.1.0 - Add Forecast API units and language support.
-1.1.1 - Add Forecast API units’ ‘auto’ option and set as default.
-1.1.2 - Allow longitude and latitude values to be passed in a strings; improve value verification.
+- 1.1.0 - Add Forecast API units and language support.
+- 1.1.1 - Add Forecast API units’ ‘auto’ option and set as default.
+- 1.1.2 - Allow longitude and latitude values to be passed in a strings; improve value verification.
 
 ## License
 
