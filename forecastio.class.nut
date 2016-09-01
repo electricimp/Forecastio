@@ -14,7 +14,7 @@ class Forecastio {
     // License: MIT
 
     static FORECAST_URL = "https://api.forecast.io/forecast/";
-    static version = [1,1,1];
+    static version = [1,1,2];
 
     _apikey = null;
     _units = null;
@@ -206,6 +206,24 @@ class Forecastio {
 
     function _checkCoords(longitude, latitude, caller) {
         // Check that valid co-ords have been supplied
+        if (typeof longitude != "float") {
+            try {
+                longitude = longitude.tofloat();
+            } catch (err) {
+                if (_debug) server.error("Forecastio." + caller + "() can't convert supplied longitude value");
+                return false;
+            }
+        }
+
+        if (typeof latitude != "float") {
+            try {
+                latitude = latitude.tofloat();
+            } catch (err) {
+                if (_debug) server.error("Forecastio." + caller + "() can't convert supplied latitude value");
+                return false;
+            }
+        }
+
         if (longitude == 999 || latitude == 999) {
             if (_debug) server.error("Forecastio." + caller + "() requires valid latitude/longitude co-ordinates");
             return false;
