@@ -1,4 +1,4 @@
-# Forecastio 1.1.1
+# Forecastio 1.1.2
 
 This class provides access to the Forecast API (v2) provided by [Forecast.io](http://forecast.io/).
 
@@ -8,7 +8,7 @@ The Forecast API returns a wealth of data (in JSON format). As such, it is left 
 
 Please note that the Forecast API is a commercial service. Though the first 1000 API calls made under your API key are free of charge, subsequent calls are billed at a rate of $0.0001 per call. You and your application will not be notified by the library if this occurs, so you may wish to add suitable call-counting code to your application. The usage terms also require the addition of a “Powered by Forecast” badge that links to `http://forecast.io/` wherever data from the API is displayed.
 
-**To add this library to your project, add** `#require "Forecastio.class.nut:1.1.1"` **to the top of your agent code**
+**To add this library to your project, add** `#require "Forecastio.class.nut:1.1.2"` **to the top of your agent code**
 
 ## Class Usage
 
@@ -19,7 +19,7 @@ The constructor requires your Forecast API key as a string.
 You may also pass a boolean value into the *debug* parameter: if you pass `true`, extra debugging information will be posted to the device log. This is disabled by default.
 
 ```squirrel
-#require "Forecastio.class.nut:1.1.1"
+#require "Forecastio.class.nut:1.1.2"
 
 const API_KEY = "<YOUR_FORECAST_API_KEY>";
 
@@ -30,7 +30,7 @@ fc <- Forecastio(API_KEY);
 
 ### forecastRequest(*longitude, latitude[, callback]*)
 
-This method sends a [forecast request](https://developer.forecast.io/docs/v2#forecast_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude*.
+This method sends a [forecast request](https://developer.forecast.io/docs/v2#forecast_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude* as integers, floats or strings.
 
 You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function must include two parameters: *err*, into which a human-readable error message error message will passed if an error was encountered during the assembly or sending of the request; and *data*, a table containing the decoded response from Forecast.io.
 
@@ -133,6 +133,7 @@ See *setUnits()*, above, for an example of *setLanguage()*’s use.
 
 1.1.0 - Add Forecast API units and language support.
 1.1.1 - Add Forecast API units’ ‘auto’ option and set as default.
+1.1.2 - Allow longitude and latitude values to be passed in a strings; improve value verification.
 
 ## License
 
