@@ -1,5 +1,9 @@
 # Forecastio 1.1.2
 
+**Following Dark Sky’s rebranding of the Forecast.io service, this library has been deprecated and will no longer be updated in this form. The endpoints it currently supports will soon become unavailable, so please take a moment to update your code to make use of our [DarkSky library](https://github.com/electricimp/DarkSky) which will replace this one.**
+
+**Please note DarkSky 1.0.0 is equivalent to Forecastio 1.1.2**
+
 This class provides access to the Forecast API (v2) provided by [Forecast.io](http://forecast.io/).
 
 Access to the API is controlled by key. To obtain a key, please register for developer access [here](https://developer.forecast.io/register).
