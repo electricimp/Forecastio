@@ -32,9 +32,13 @@ fc <- Forecastio(API_KEY);
 
 ## Class Methods
 
-### forecastRequest(*longitude, latitude[, callback]*)
+### forecastRequest(*longitude, latitude, units[, callback]*)
 
 This method sends a [forecast request](https://developer.forecast.io/docs/v2#forecast_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude* as integers, floats or strings.
+
+You can pass a units parameter which will return the data from the API in the units desired.
+Valid entries include: us (the default/fallback), si, ca, uk2, auto
+see https://developer.forecast.io/docs/v2#options for more infomation.
 
 You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function must include two parameters: *err*, into which a human-readable error message error message will passed if an error was encountered during the assembly or sending of the request; and *data*, a table containing the decoded response from Forecast.io.
 
@@ -45,7 +49,7 @@ The data returned by the Forecast API is complex and is not parsed in any way by
 #### Example
 
 ```squirrel
-fc.forecastRequest(myLongitude, myLatitude, function(err, data) {
+fc.forecastRequest(myLongitude, myLatitude, units, function(err, data) {
     if (err) server.error(err);
 
     if (data) {
@@ -71,9 +75,13 @@ fc.forecastRequest(myLongitude, myLatitude, function(err, data) {
 });
 ```
 
-### timeMachineRequest(*longitude, latitude, time[, callback]*)
+### timeMachineRequest(*longitude, latitude, time, units[, callback]*)
 
 This method sends a [time machine request](https://developer.forecast.io/docs/v2#time_call) to the Forecast API using the co-ordinates passed into the parameters *longitude* and *latitude*, and a timestamp. The value passed into the parameter *time* should be either a Unix timestamp (an Integer) or a string formatted according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
+
+You can pass a units parameter which will return the data from the API in the units desired.
+Valid entries include: us (the default/fallback), si, ca, uk2, auto
+see https://developer.forecast.io/docs/v2#options for more infomation.
 
 You can pass an optional callback function: if you do, the forecast request will be made asynchronously and the callback executed with the returned data. Your callback function must include two parameters: *err*, into which a human-readable error message error message will passed if an error was encountered during the assembly or sending of the request; and *data*, a table containing the decoded response from Forecast.io.
 
@@ -85,7 +93,7 @@ The data returned by the Forecast API is complex and is not parsed in any way by
 
 ```squirrel
 local monthAgo = time() - 2592000;
-fc.timeMachineRequest(myLongitude, myLatitude, monthAgo, function(err, data) {
+fc.timeMachineRequest(myLongitude, myLatitude, monthAgo, units, function(err, data) {
     if (err) server.error(err);
 
     if (data) {
